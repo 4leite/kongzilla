@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { API_URL } from 'config/constants'
 
 interface KongRouteResponse {
 	data: Array<{
@@ -22,7 +23,7 @@ export interface KongRouteDefinition {
 
 export const getRoutes = async () => {
 	try {
-		const response = await axios.get<KongRouteResponse>('http://localhost:8001/routes')
+		const response = await axios.get<KongRouteResponse>(`${API_URL}/routes`)
 
 		// Map each route's paths as separate routes 
 		const nestedRoutesArray = response?.data?.data?.map(

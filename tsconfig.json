@@ -4,6 +4,7 @@
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
 		"baseUrl": "./src",
-		"typeRoots": ["./node_modules/@types", "src/type-modules"]
+		"typeRoots": ["./node_modules/@types", "src/type-modules"],
+		"types": ["node"]
 	}
 }

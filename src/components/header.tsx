@@ -17,5 +17,6 @@ export const Header: React.FunctionComponent = () => <>
   <HeaderContainer>
     <Logo src={logo} alt="logo" />
     <h1>Kongzilla</h1>
+    {/*<p>API_URL: {window._env_.API_URL}</p>*/}
   </HeaderContainer>
 </>

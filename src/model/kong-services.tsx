@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { API_URL } from 'config/constants'
 
 interface KongServiceResponse {
 	data: Array<{
@@ -15,7 +16,8 @@ export interface KongServiceDefinition {
 
 export const getServices = async () => {
 	try {
-		const response = await axios.get<KongServiceResponse>('http://localhost:8001/services')
+		console.log(API_URL)
+		const response = await axios.get<KongServiceResponse>(`${API_URL}/services`)
 		
 		const services: KongServiceDefinition[] = response?.data?.data?.map(
 			service => ({
