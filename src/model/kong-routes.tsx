@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_URL } from 'config/constants'
+import { getSuspendedModel } from 'services/suspended-resource'
 
 interface KongRouteResponse {
 	data: Array<{
@@ -13,15 +14,7 @@ interface KongRouteResponse {
 	}>
 }
 
-export interface KongRouteDefinition {
-	id: string
-	path: string
-	methods: string[]
-	priority: number
-	service: string
-}
-
-export const getRoutes = async () => {
+const getRoutes = async () => {
 	try {
 		const response = await axios.get<KongRouteResponse>(`${API_URL}/routes`)
 
@@ -37,12 +30,20 @@ export const getRoutes = async () => {
 				})
 			)
 		)
-		
-		// Check we have some routes, flatten the array of arrays
+		// Check we have some routes; flatten the array of arrays
 		return nestedRoutesArray && Array.prototype.concat(...nestedRoutesArray)			
-
 	} catch (error) {
 		console.log('getService error')
 		throw error
 	}
 }
+
+export interface KongRouteDefinition {
+	id: string
+	path: string
+	methods: string[]
+	priority: number
+	service: string
+}
+
+export const routesModel = getSuspendedModel<KongRouteDefinition[]>(getRoutes)

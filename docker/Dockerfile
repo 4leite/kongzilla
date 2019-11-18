@@ -11,5 +11,10 @@ RUN npm run build
 # production environment
 FROM nginx:1.16.0-alpine
 COPY --from=build /app/build /usr/share/nginx/html
+
+COPY /docker/docker-entry.sh /docker-entry.sh
+RUN chmod u+x /docker-entry.sh
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+ENTRYPOINT ["/docker-entry.sh", "run"]

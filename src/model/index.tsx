@@ -1,18 +1,17 @@
-import { getSuspendedModel, SuspendedResourceModel } from 'services/suspended-resource'
-import { KongRouteDefinition, getRoutes } from 'model/kong-routes'
-import { KongServiceDefinition, getServices } from 'model/kong-services'
+import { routesModel } from 'model/kong-routes'
+import { servicesModel } from 'model/kong-services'
 import { thunk, Thunk, computed, Computed } from 'easy-peasy'
 
 interface StoreModel {
-	routes: SuspendedResourceModel<KongRouteDefinition[]>
-	services: SuspendedResourceModel<KongServiceDefinition[]>
+	routes: typeof routesModel
+	services: typeof servicesModel
 	isFetchingAll: Computed<StoreModel, boolean>
 	fetchAll: Thunk<StoreModel>
 }
 
 export const storeModel: StoreModel = {
-	routes: getSuspendedModel<KongRouteDefinition[]>(getRoutes),
-	services: getSuspendedModel<KongServiceDefinition[]>(getServices),
+	routes: routesModel,
+	services: servicesModel,
 	isFetchingAll: computed(
 		state => (state.routes.isFetching || state.services.isFetching)
 	),

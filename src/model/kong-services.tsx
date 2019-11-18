@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_URL } from 'config/constants'
+import { getSuspendedModel } from 'services/suspended-resource'
 
 interface KongServiceResponse {
 	data: Array<{
@@ -9,12 +10,7 @@ interface KongServiceResponse {
 	}>
 }
 
-export interface KongServiceDefinition {
-	title: string
-	id: string
-}
-
-export const getServices = async () => {
+const getServices = async () => {
 	try {
 		console.log(API_URL)
 		const response = await axios.get<KongServiceResponse>(`${API_URL}/services`)
@@ -33,3 +29,10 @@ export const getServices = async () => {
 		throw error
 	}
 }
+
+export interface KongServiceDefinition {
+	title: string
+	id: string
+}
+
+export const servicesModel = getSuspendedModel<KongServiceDefinition[]>(getServices)
