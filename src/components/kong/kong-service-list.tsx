@@ -8,7 +8,7 @@ export const KongServiceList: React.FunctionComponent = () => {
 
 	return <>
 		{services.map(service => (
-			<KongService key={`service-${service.id}`} service={service} />
+			<KongService key={`service-${service.key}`} service={service} />
 		))}		
 	</>
 }

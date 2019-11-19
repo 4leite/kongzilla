@@ -51,7 +51,7 @@ export const addRoute = async (route: KongRouteDefinition) => {
 		strip_path: false,
 		preserve_host: false,
 		service: {
-			name: route.service.name,
+			name: route.service.key,
 			id: route.service.id
 		}
 	})

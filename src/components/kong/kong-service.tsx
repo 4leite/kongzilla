@@ -30,9 +30,11 @@ const StyledErrorBoundary = styled(ErrorBoundary)`
 export const KongService: React.FunctionComponent<Props> = props => {
 	const { service } = props
 
+	const isAddable = service?.key === 'dev1-api-gateway'
+
 	return <>
 		<ServiceName><strong>{service?.title}</strong></ServiceName>
-		<KongAddRoute service={service} />
+		{isAddable && <KongAddRoute service={service} />}
 		<StyledErrorBoundary>
 			<Suspense fallback={<Loading />}>
 				<KongRouteList service={service} />
