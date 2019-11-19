@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Kong } from 'components/kong'
 import { Header } from './kong/header'
 import { Footer } from './footer'
-import { ControlPanel } from './control-panel'
+// import { ControlPanel } from './control-panel'
 
 const PageContainer = styled.div`
 	display: grid;
@@ -15,7 +15,7 @@ const PageContainer = styled.div`
 export const Page: React.FunctionComponent = () => <>
    <PageContainer>
         <Header />
-		<ControlPanel />
+		{/*<ControlPanel />*/}
         <Kong />
         <Footer />
     </PageContainer>
