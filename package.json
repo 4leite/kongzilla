@@ -2,6 +2,7 @@
   "name": "kongzilla",
   "version": "0.4.0",
   "private": true,
+  "homepage": "/_kongzilla",
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",

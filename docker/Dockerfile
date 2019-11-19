@@ -10,7 +10,8 @@ RUN npm run build
 
 # production environment
 FROM nginx:1.16.0-alpine
-COPY --from=build /app/build /usr/share/nginx/html
+RUN mkdir  /usr/share/nginx/html/_kongzilla
+COPY --from=build /app/build /usr/share/nginx/html/_kongzilla
 
 COPY /docker/docker-entry.sh /docker-entry.sh
 RUN chmod u+x /docker-entry.sh
