@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components';
 
 interface Props {
@@ -5,13 +6,13 @@ interface Props {
 }
 
 const Header = styled.div`
-grid-column-start: 1;
-grid-column-end: 4;
+	grid-column-start: start;
+	grid-column-end: span end;
 `
 
 const ErrorMessage = styled.div`
-grid-column-start: 1;
-grid-column-end: 4;
+	grid-column-start: start;
+	grid-column-end: span end;
 `
 
 export const KongError: React.FunctionComponent<Props> = props => {

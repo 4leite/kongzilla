@@ -2,6 +2,7 @@ import React from 'react'
 
 interface Props {
 	children?: any
+	className?: string
 	fallback: React.FunctionComponent<State>
 }
 
@@ -25,12 +26,14 @@ export class ErrorBoundary extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { children, fallback: FallbackComponent } = this.props
+		const { children, className, fallback: FallbackComponent } = this.props
 		const { error, info } = this.state
 
 		return ( 
 			error ? 
-				<FallbackComponent error={error} info={info}/>
+				<div className={className}>
+					<FallbackComponent error={error} info={info}/>
+				</div>
 			: 
 				children
 		)

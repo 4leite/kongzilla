@@ -1,16 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 import logo from 'assets/logo.svg'
+import { theme } from 'constants/style'
 
 const Logo = styled.img`
   height: 60px;
 `
 const HeaderContainer = styled.div`
-  background-color: #303030;
+  background-color: ${theme.header.background};
+  color: ${theme.header.color};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
 `
 
 export const Header: React.FunctionComponent = () => <>

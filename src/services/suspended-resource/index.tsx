@@ -1,11 +1,15 @@
 import { Action, Thunk, action, thunk } from 'easy-peasy'
 
+
 export interface SuspendedResourceModel<T> {
 	isFetching: boolean
 	read: () => T
-	postfetch: Action<SuspendedResourceModel<T>>
-  	prefetch: Action<SuspendedResourceModel<T>, () => T>
+	fetching: Action<SuspendedResourceModel<T>, boolean>
+  	setSuspender: Action<SuspendedResourceModel<T>, () => T>
+	setResource: Action<SuspendedResourceModel<T>, T>
 	fetch: Thunk<SuspendedResourceModel<T>>
+	suspendedFetch: Thunk<SuspendedResourceModel<T>>
+	change: Thunk<SuspendedResourceModel<T>, Promise<any>>
 }
 
 type FetchStatus = 'pending' | 'success' | 'error'
@@ -39,28 +43,59 @@ const simpleSuspendedFetch = <T, >(promise: Promise<T>): SuspendedResource<T> =>
 export const getSuspendedModel = <T, >(fetch: () => Promise<T>): SuspendedResourceModel<T> => ({
 	isFetching: false,
 	read: simpleSuspendedFetch<T>(fetch()),
-	prefetch: action((state, payload) => {
-		state.isFetching = true
+	fetching: action((state, payload) => {
+		state.isFetching = payload
+	}),
+	setSuspender: action((state, payload) => {
 		state.read = payload
 	}),
-	postfetch: action(state => {
-		state.isFetching = false
+	setResource: action((state, payload) => {
+		state.read = () => payload
 	}),
-	fetch: thunk(async (actions, payload, {getState}) => {
+	suspendedFetch: thunk(async (actions, payload, {getState}) => {
 		try {
 			getState().read()
+			actions.fetching(true)
 			const suspender = simpleSuspendedFetch<T>(fetch())
-			actions.prefetch(suspender)
+			actions.setSuspender(suspender)
 			try {
 				suspender()
 			} catch (suspender) {
 				await suspender
 			} finally {
-				actions.postfetch()
+				actions.fetching(false)
 			}
 		} catch (suspender) {
 			// Let the next accessor catch the error
 		}
+	}),
+	fetch: thunk(async (actions, payload, {getState}) => {
+		try {
+			getState().read()
+			actions.fetching(true)
+			try {
+				actions.setResource(await fetch())
+			} catch (error) {
+				actions.setSuspender(() => {throw error})
+			}
+			actions.fetching(false)
+		
+		} catch (suspender) {
+			// Let the next accessor catch the error
+		}
+	}),
+	change: thunk(async (actions, payload) => {
+		actions.fetching(true)
+		let result
+		try {
+			result = await payload
+			actions.setResource(await fetch())
+		} catch (error) {
+			throw error
+		} finally {
+			actions.fetching(false)
+		}
+		return result
 	})
 })
 
