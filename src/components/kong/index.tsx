@@ -1,31 +1,49 @@
 import React, { Suspense } from 'react'
 import { Loading } from 'components/loading'
-import { ErrorBoundary } from 'components/error-boundary'
-import { KongServiceList } from 'components/kong/kong-service-list'
+import { ErrorBoundary } from 'components/error'
 import styled from 'styled-components'
 import { theme } from 'constants/style'
+import { KongAddRoute } from './kong-add-route'
+import { KongRouteList } from './kong-route-list'
 
 const Container = styled.div`
 	background-color: ${theme.page.background};
-	color: ${theme.page.color};  
+	color: ${theme.page.color};
 	display: grid;
-	grid-template-columns: [start a1] auto [b1] auto [c1] auto [d1] auto [e1] auto [f1 end];
+	grid-template-columns: [start a1] auto [b1] auto [c1] auto [d1] auto [e1] auto [f1] auto [g1 end];
 	grid-gap: 10px 10px;
 	padding: 20px 10px;
 	align-content: start;
 	justify-content: center;
 `
-// grid-template-columns: [a] auto [b] auto [c] auto [d] auto [e];
-// grid-template-columns: [service-l] auto auto auto auto [service-r]
-// grid-template-columns: [service-l priority-l] auto [priority-r path-l] auto [path-r methods-l] auto [methods-r actions-l] auto [actions-r service-r];
+const StyledErrorBoundary = styled(ErrorBoundary)`
+	padding-top: 20px;
+	padding-bottom: 10px;
+	grid-column-start: start;
+	grid-column-end: span end;
+	justify-self: center;
+	color: red;
+`
+const StyledLoading = styled(Loading)`
+	padding-top: 20px;
+	padding-bottom: 10px;
+	grid-column-start: start;
+	grid-column-end: span end;
+	justify-self: center;
+`
 
-export const Kong: React.FunctionComponent = () => 
+export const Kong: React.FC = () => 
 <>
 	<Container>
-		<ErrorBoundary>
-			<Suspense fallback={<Loading />}>
-				<KongServiceList/>
+		<StyledErrorBoundary>
+			<Suspense fallback={<StyledLoading />}>
+				<KongAddRoute />
+				<StyledErrorBoundary>
+					<Suspense fallback={<StyledLoading />}>
+						<KongRouteList />
+					</Suspense>
+				</StyledErrorBoundary>
 			</Suspense>
-		</ErrorBoundary>
+		</StyledErrorBoundary>
 	</Container>
 </>

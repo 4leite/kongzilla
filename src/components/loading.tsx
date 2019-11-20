@@ -4,7 +4,7 @@ interface Props {
 	className?: string
 }
 
-export const Loading: React.FunctionComponent<Props> = props => {
+export const Loading: React.FC<Props> = props => {
 	const { className } = props
 
 	return <div className={className}>

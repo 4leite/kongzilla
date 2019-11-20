@@ -4,8 +4,7 @@ import styled from 'styled-components'
 import { theme } from 'constants/style'
 import { Loading } from 'components/loading'
 import { Count } from 'components/count'
-import { ErrorBoundary } from './error-boundary'
-import { ErrorFallback } from './error-boundary/error-fallback'
+import { ErrorBoundary } from './error'
 
 const Container = styled.div`
 	background-color: ${theme.toolbar.background};
@@ -23,26 +22,28 @@ const StyledCount = styled(Count)`
 	display: inline;
 	margin-left: 20px;
 `
-const StyledFallback = styled(ErrorFallback)`
+const StyledErrorBoundary = styled(ErrorBoundary)`
 	margin-top: 20px;
 	color: red;
 `
 
-export const ControlPanel: React.FunctionComponent = () => {
+export const ControlPanel: React.FC = () => {
 
 	const isFetchAllDisabled: boolean = useStoreState(state => state.isFetchingAll)
 	const fetchAllAction = useStoreActions(actions => actions.fetchAll)
 
+	const onClick = () => fetchAllAction()
+
 	return <>
 		<Container>
-			<button onClick={() => fetchAllAction()} disabled={isFetchAllDisabled}>
+			<button onClick={onClick} disabled={isFetchAllDisabled}>
 				Reload
 			</button>
-			<ErrorBoundary fallback={StyledFallback}>
+			<StyledErrorBoundary >
 				<Suspense fallback={<StyledLoading />}>
 					<StyledCount />
 				</Suspense>
-			</ErrorBoundary>
+			</StyledErrorBoundary>
 		</Container>
 	</>
 }

@@ -3,7 +3,7 @@ import React from 'react'
 interface Props {
 	children?: any
 	className?: string
-	fallback: React.FunctionComponent<State>
+	fallback: React.FC<State>
 }
 
 interface State {

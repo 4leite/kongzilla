@@ -8,11 +8,11 @@ import { Footer } from './footer'
 const PageContainer = styled.div`
 	display: grid;
   	min-height: 100vh;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto 1fr auto;
     grid-template-columns: 100%;
 `
 
-export const Page: React.FunctionComponent = () => <>
+export const Page: React.FC = () => <>
    <PageContainer>
         <Header />
 		{/*<ControlPanel />*/}

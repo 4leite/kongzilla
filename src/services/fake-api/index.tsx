@@ -2,7 +2,7 @@ type FetchResponse<T> = { payload: T }
 type Fetch = <T, >(url: string, options?: any) => Promise<FetchResponse<T>>
 
 let i: number = -1
-const getCount = () => ++i < 3 ? i : i < 4 ? null : undefined
+const getCount = () => ++i < 2 ? i : i < 3 ? null : undefined
 			
 
 const fakeApi = <T, >(payload: any, delay: number): Promise<FetchResponse<T>> => {

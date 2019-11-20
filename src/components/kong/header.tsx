@@ -14,7 +14,7 @@ const HeaderContainer = styled.div`
   justify-content: center;
 `
 
-export const Header: React.FunctionComponent = () => <>
+export const Header: React.FC = () => <>
   <HeaderContainer>
     <Logo src={logo} alt="logo" />
     <h1>Kongzilla</h1>

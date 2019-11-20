@@ -15,7 +15,7 @@ const ErrorMessage = styled.div`
 	grid-column-end: span end;
 `
 
-export const KongError: React.FunctionComponent<Props> = props => {
+export const KongError: React.FC<Props> = props => {
 	const { error } = props
 
 	return <>

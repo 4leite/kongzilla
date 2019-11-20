@@ -5,7 +5,7 @@ interface Props {
 	className?: string
 }
 
-export const Count: React.FunctionComponent<Props> = (props) => {
+export const Count: React.FC<Props> = (props) => {
 	const { className } = props
 
 	const readCount = useStoreState(state => state.counter.resource.read)

@@ -12,7 +12,7 @@ const FooterContainer = styled.div`
 	text-align: center;
 `
 
-export const Footer: React.FunctionComponent = () => <>
+export const Footer: React.FC = () => <>
 	<FooterContainer>
 		. . .
 	</FooterContainer>

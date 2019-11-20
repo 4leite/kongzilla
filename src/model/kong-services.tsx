@@ -18,11 +18,11 @@ export interface KongServiceDefinition {
 
 export const getServices = async () => {
 	try {
-		console.log(API_URL)
 		const response = await axios.get<KongServiceResponse>(`${API_URL}/services`)
 		
 		const services: KongServiceDefinition[] = response?.data?.data
 			?.filter(service => service.host !== 'apigw.mylotto.co.nz')
+			?.sort((a, b) => a.name.localeCompare(b.name))
 			?.map(
 				service => ({
 					id: service.id,

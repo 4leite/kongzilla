@@ -3,30 +3,18 @@ import styled from 'styled-components'
 import { KongServiceDefinition } from 'model/kong-services'
 import { useStoreState, useStoreActions } from 'store'
 
-interface Props {
-	service: KongServiceDefinition
-}
-
 const Name = styled.input`
-	grid-column-start: a1;
-	grid-column-end: b1;
 `
 const Priority = styled.input`
-	grid-column-start: b1;
-	grid-column-end: c1;
 	width: 2em;
 `
 const Path = styled.input`
-	grid-column-start: c1;
-	grid-column-end: d1;
 `
 const Method = styled.input`
-	grid-column-start: d1;
-	grid-column-end: e1;
+`
+const Destination = styled.input`
 `
 const Actions = styled.div`
-	grid-column-start: e1;
-	grid-column-end: f1;
 `
 const ErrorMessage = styled.div`
 	grid-column-start: start;
@@ -40,14 +28,18 @@ const onChange = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLI
 	setState(e.currentTarget.value)
 }
 
-export const KongAddRoute: React.FunctionComponent<Props> = props => {
-	const { service } = props
+export const KongAddRoute: React.FC = () => {
+	const readServices = useStoreState(state=> state.services.resource.read)
+	const services: KongServiceDefinition[] = readServices()
+	
+	const service: KongServiceDefinition = services.find((s) => s.title === 'dev1-api-gateway') ?? services[0]
 
 	const [error, setError] = useState()
-	const [name, setName] = useState()
+	const [name, setName] = useState('')
 	const [priority, setPriority] = useState(10)
 	const [path, setPath] = useState('/api/')
 	const [methods, setMethods] = useState('GET, PUT, POST, DELETE, OPTIONS')
+	const [destination, setDestination] = useState(service.id);
 
 	const isDisabled: boolean = useStoreState(state => state.routes.resource.isFetching)
 	const addRouteAction = useStoreActions(actions => actions.routes.addRoute)
@@ -57,7 +49,7 @@ export const KongAddRoute: React.FunctionComponent<Props> = props => {
 		setError(null)
 		// TODO: validations
 		addRouteAction({
-			service,
+			serviceId: destination,
 			name,
 			priority,
 			path,
@@ -71,6 +63,7 @@ export const KongAddRoute: React.FunctionComponent<Props> = props => {
 		<Name name='name' onChange={onChange(setName)} value={name}/>
 		<Priority name='priority' onChange={onChange(setPriority)} value={priority}/>
 		<Path name='path' onChange={onChange(setPath)} value={path}/>
+		<Destination name='destination' disabled={true} onChange={onChange(setDestination)} value={destination}/>
 		<Method name='methods' onChange={onChange(setMethods)} value={methods}/>
 		<Actions>
 			<button name='add' onClick={onClick} disabled={isDisabled}>Add</button>
