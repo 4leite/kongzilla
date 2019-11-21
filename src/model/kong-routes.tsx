@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import { API_URL } from 'constants/global'
 import { getSuspendedModel, SuspendedResourceModel } from 'services/suspended-resource'
-import { Thunk, thunk, Computed, computed } from 'easy-peasy'
+import { Thunk, thunk, Computed, computed, Action, action } from 'easy-peasy'
 
 interface getRoutesPayload {
 	data: Array<{
@@ -54,14 +54,6 @@ export interface KongRouteDefinition {
 	created: Date
 	serviceId: string
 	serviceName?: string
-}
-
-export interface KongRoutesModel {
-	resource: SuspendedResourceModel<KongRouteDefinition[]>
-	deleteRoute: Thunk<KongRoutesModel, KongRouteDefinition>
-	addRoute: Thunk<KongRoutesModel, addKongRouteDefinition, Promise<any>>
-	selectedRoute: Computed<KongRoutesModel, KongRouteDefinition>
-	selectedKey: string | null
 }
 
 const getRoutes = async (): Promise<KongRouteDefinition[]> => {
@@ -132,14 +124,32 @@ const transformAddKongRouteToPayload = (route: addKongRouteDefinition): addRoute
 
 export const routeToString = (route: KongRouteDefinition) => JSON.stringify(transformAddKongRouteToPayload(route), null, 1)
 
+export interface KongRoutesModel {
+	resource: SuspendedResourceModel<KongRouteDefinition[]>
+	deleteRoute: Thunk<KongRoutesModel, KongRouteDefinition>
+	addRoute: Thunk<KongRoutesModel, addKongRouteDefinition, Promise<any>>
+	selectedRoute: Computed<KongRoutesModel, KongRouteDefinition | null>
+	selectedKey: string | null
+	setSelected: Action<KongRoutesModel, string | null>
+}
+
 export const routesModel: KongRoutesModel = {
 	resource: getSuspendedModel<KongRouteDefinition[]>(getRoutes),
-	deleteRoute: thunk(async (actions, payload) => (
-		await actions.resource.change(deleteRoute(payload))
+	deleteRoute: thunk(async (actions, payload) => {
+		const result = await actions.resource.change(deleteRoute(payload))
+		actions.setSelected(null)
+		return result
+	}),
+	addRoute: thunk(async (actions, payload) => {
+		const result = await actions.resource.change(addRoute(payload))
+		actions.setSelected(`${result}.id_0`)
+		return result 
+	}),
+	selectedRoute: computed(state => ( 
+		(state.selectedKey && state.resource.read().find(route => route.key === state.selectedKey)) || null
 	)),
-	addRoute: thunk(async (actions, payload) => ( 
-		await actions.resource.change(addRoute(payload))
-	)),
-	selectedRoute: computed(state => state.resource.read()[0]),
-	selectedKey: null
+	selectedKey: null,
+	setSelected: action((state, routeKey) => {
+		state.selectedKey = routeKey 
+	})
 }

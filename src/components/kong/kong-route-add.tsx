@@ -3,10 +3,6 @@ import styled from 'styled-components'
 import { KongServiceDefinition } from 'model/kong-services'
 import { useStoreState, useStoreActions } from 'store'
 
-interface Props {
-	setSelected: (key: string) => void
-}
-
 const Name = styled.input`
 `
 const Priority = styled.input`
@@ -30,8 +26,8 @@ const onChange = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLI
 	setState(e.currentTarget.value)
 }
 
-export const KongAddRoute: React.FC<Props> = (props) => {
-	const {setSelected} = props
+export const KongRouteAdd: React.FC = () => {
+	const setSelected = useStoreActions(state => state.routes.setSelected)
 
 	const readServices = useStoreState(state=> state.services.resource.read)
 	const services: KongServiceDefinition[] = readServices()
@@ -71,7 +67,6 @@ export const KongAddRoute: React.FC<Props> = (props) => {
 		<Name name='name' onChange={onChange(setName)} value={name}/>
 		<Priority name='priority' onChange={onChange(setPriority)} value={priority}/>
 		<Path name='path' onChange={onChange(setPath)} value={path}/>
-		{/*<Destination name='destination' disabled={true} onChange={onChange(setDestination)} value={destination}/>*/}
 		<select name='destination' onChange={onChange(setDestination)} value={destination}>
 			{services.map(service => (
 				<option value={service.id}>{service.title}</option>

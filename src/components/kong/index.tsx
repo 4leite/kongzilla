@@ -1,9 +1,9 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense } from 'react'
 import { Loading } from 'components/loading'
 import { ErrorBoundary } from 'components/error'
 import styled from 'styled-components'
 import { theme } from 'constants/style'
-import { KongAddRoute } from './kong-add-route'
+import { KongRouteAdd } from './kong-route-add'
 import { KongRouteList } from './kong-route-list'
 
 const Container = styled.div`
@@ -35,26 +35,23 @@ const H = styled.div`
 	font-size: larger;
 	color: ${theme.page.soft};
 `
+const ColumnNames: React.ReactFragment = <>
+	<H>Name</H><H>Priority</H><H>Path (Regex)</H><H>Destination</H><H>Methods</H><H></H>
+</>
 
-export const Kong: React.FC = () => {
-	const [selected, setSelected] = useState()
-
-	return <>
+export const Kong: React.FC = () => <>
 	<Container>
-		<H>Name</H><H>Priority</H><H>Path (Regex)</H><H>Destination</H><H>Methods</H><H></H>
 		<StyledErrorBoundary>
 			<Suspense fallback={<StyledLoading />}>
-				<KongAddRoute setSelected={setSelected}/>
+				{ColumnNames}
+				<KongRouteAdd />
 				<StyledErrorBoundary>
 					<Suspense fallback={<StyledLoading />}>
-						<KongRouteList 
-							selected={selected}
-							setSelected={setSelected}
-						/>
+						<KongRouteList/>
 					</Suspense>
 				</StyledErrorBoundary>
 			</Suspense>
 		</StyledErrorBoundary>
 	</Container>
 </>
-}
+

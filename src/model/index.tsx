@@ -16,11 +16,11 @@ export const storeModel: StoreModel = {
 	routes: routesModel,
 	services: servicesModel,
 	isFetchingAll: computed(
-		state => (state.routes.resource.isFetching || state.services.resource.isFetching || state.counter.resource.isFetching)
+		state => (state.routes.resource.isFetching || state.services.resource.isFetching)
+		// state => (state.routes.resource.isFetching || state.services.resource.isFetching || state.counter.resource.isFetching)
 	),
 	fetchAll: thunk(
 		actions => {
-			actions.counter.resource.suspendedFetch()
 			actions.routes.resource.fetch()
 			actions.services.resource.fetch()
 		}

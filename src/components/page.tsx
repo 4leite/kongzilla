@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Kong } from 'components/kong'
-import { Header } from './kong/header'
+import { Header } from './header'
 import { Footer } from './footer'
 // import { ControlPanel } from './control-panel'
 

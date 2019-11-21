@@ -1,9 +1,10 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense } from 'react'
+import { useStoreState, useStoreActions } from 'store'
 import styled from 'styled-components'
 import { theme } from 'constants/style'
 import { Loading } from 'components/loading'
-import { ErrorBoundary } from './error'
-import { KongRouteCheck } from './kong/kong-route-check'
+import { Count } from 'components/counter/count'
+import { ErrorBoundary } from '../error'
 
 const Container = styled.div`
 	background-color: ${theme.toolbar.background};
@@ -17,28 +18,30 @@ const StyledLoading = styled(Loading)`
 	display: inline;
 	margin-left: 20px;
 `
+const StyledCount = styled(Count)`
+	display: inline;
+	margin-left: 20px;
+`
 const StyledErrorBoundary = styled(ErrorBoundary)`
 	margin-top: 20px;
 	color: red;
 `
-const StyledKongRouteCheck = styled(KongRouteCheck)`
-	margin-left: 20px;
-`
-
-const onChange = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-	e.preventDefault()
-	setState(e.currentTarget.value)
-}
 
 export const ControlPanel: React.FC = () => {
-	const [path, setPath] = useState('/api/')
+
+	const isFetchAllDisabled: boolean = useStoreState(state => state.isFetchingAll)
+	const fetchAllAction = useStoreActions(actions => actions.fetchAll)
+
+	const onClick = () => fetchAllAction()
 
 	return <>
 		<Container>
-			<input name='path' onChange={onChange(setPath)} value={path}/>
+			<button onClick={onClick} disabled={isFetchAllDisabled}>
+				Reload
+			</button>
 			<StyledErrorBoundary >
 				<Suspense fallback={<StyledLoading />}>
-					<StyledKongRouteCheck path={path} />
+					<StyledCount />
 				</Suspense>
 			</StyledErrorBoundary>
 		</Container>

@@ -6,15 +6,16 @@ import copy from 'clipboard-copy'
 
 interface Props {
 	route: KongRouteDefinition
-	selected: string
-	setSelected: (key: string) => void
 }
 
 const soft = {color: theme.page.soft}
 const bold: React.CSSProperties = {fontWeight: "bold"}
 
-export const KongRoute: React.FC<Props> = props => {
-	const { route, selected, setSelected } = props
+export const KongRouteRow: React.FC<Props> = props => {
+	const { route  } = props
+
+	const selected = useStoreState(state => state.routes.selectedKey)
+	const setSelected = useStoreActions(action => action.routes.setSelected)
 
 	const isDisabled: boolean = useStoreState(state => state.routes.resource.isFetching)
 	const deleteRouteAction = useStoreActions(actions => actions.routes.deleteRoute)
@@ -29,15 +30,13 @@ export const KongRoute: React.FC<Props> = props => {
 		copy(routeToString(route))
 	}
 
-	const onSelectClick = (e: React.SyntheticEvent) => setSelected(route.key)
-
 	const isSelected = selected === route.key
 	return <>
-		<div style={isSelected ? {} : soft} onClick={onSelectClick}>{route.name}</div>
-		<div style={isSelected ? bold : {}} onClick={onSelectClick}>{route.priority}</div>
-		<div style={isSelected ? bold : {}} onClick={onSelectClick}>{route.path}</div>
-		<div style={isSelected ? bold : {}} onClick={onSelectClick}>{route.serviceName ?? route.serviceId}</div>
-		<div style={isSelected ? {} : soft} onClick={onSelectClick}>[{route.methods.join(", ")}]</div>
+		<div style={isSelected ? {} : soft}>{route.name}</div>
+		<div style={isSelected ? bold : {}}>{route.priority}</div>
+		<div style={isSelected ? bold : {}}>{route.path}</div>
+		<div style={isSelected ? bold : {}}>{route.serviceName ?? route.serviceId}</div>
+		<div style={isSelected ? {} : soft}>[{route.methods.join(", ")}]</div>
 		<div>
 			<button name='delete' onClick={onDeleteClick} disabled={isDisabled}>Delete</button>
 			<button onClick={onExportClick}>Export</button>

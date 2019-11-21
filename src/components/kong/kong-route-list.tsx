@@ -1,16 +1,11 @@
 import React, { useMemo } from 'react'
-import { KongRoute } from 'components/kong/kong-route'
+import { KongRouteRow } from 'components/kong/kong-route-row'
 import { useStoreState } from 'store'
 import { KongRouteDefinition } from 'model/kong-routes'
-import { KongSelectedRoute } from 'components/kong/kong-selected'
+import { KongRouteSelected } from 'components/kong/kong-route-selected'
 import styled from 'styled-components'
 
-interface Props {
-	selected: string
-	setSelected: (key: string) => void
-}
-
-const StyledKongSelected = styled(KongSelectedRoute)`
+const StyledKongRouteSelected = styled(KongRouteSelected)`
 	grid-column-start: start;
 	grid-column-end: span end;
 `
@@ -39,8 +34,7 @@ const routeSorter = (a: KongRouteDefinition, b: KongRouteDefinition) => {
 	return 1
 }
 
-export const KongRouteList: React.FC<Props> = props => {
-	const {selected, setSelected} = props
+export const KongRouteList: React.FC = () => {
 
 	const readServices = useStoreState(state => state.services.resource.read)
 	const readRoutes = useStoreState(state => state.routes.resource.read)
@@ -62,12 +56,10 @@ export const KongRouteList: React.FC<Props> = props => {
 	), [readRoutes, serviceNames])
 	
 	return <>
-		{routes.map(route => <KongRoute
+		{routes.map(route => <KongRouteRow
 			key={`route-${route.key}`} 
 			route={route}
-			selected={selected}
-			setSelected={setSelected}
 		/>)}
-		<StyledKongSelected selected={selected}/>
+		<StyledKongRouteSelected/>
 	</>
 }
