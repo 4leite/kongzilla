@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { API_URL } from 'constants/global'
 import { getSuspendedModel, SuspendedResourceModel } from 'services/suspended-resource'
-import { Thunk, thunk } from 'easy-peasy'
+import { Thunk, thunk, Computed, computed } from 'easy-peasy'
 
 interface getRoutesPayload {
 	data: Array<{
@@ -33,6 +33,9 @@ interface addRoutePayload {
 		id: string
 	}
 }
+interface addRouteResponse {
+	id: string
+}
 interface addKongRouteDefinition {
 	name: string
 	path: string
@@ -57,6 +60,8 @@ export interface KongRoutesModel {
 	resource: SuspendedResourceModel<KongRouteDefinition[]>
 	deleteRoute: Thunk<KongRoutesModel, KongRouteDefinition>
 	addRoute: Thunk<KongRoutesModel, addKongRouteDefinition, Promise<any>>
+	selectedRoute: Computed<KongRoutesModel, KongRouteDefinition>
+	selectedKey: string | null
 }
 
 const getRoutes = async (): Promise<KongRouteDefinition[]> => {
@@ -87,22 +92,19 @@ const getRoutes = async (): Promise<KongRouteDefinition[]> => {
 	}
 }
 
-const addRoute = async (route: addKongRouteDefinition) => {
+const addRoute = async (route: addKongRouteDefinition): Promise<string> => {
 
-	const payload: addRoutePayload = {
-		name: route.name,
-		protocols: [ 'http' ],
-		methods: route.methods,
-		hosts: [ 'mylotto.dev.nzlc.co.nz' ],
-		paths: [ route.path ],
-		regex_priority: route.priority,
-		strip_path: false,
-		preserve_host: false,
-		service: {
-			id: route.serviceId
-		}
+	try {
+		const payload: addRoutePayload = transformAddKongRouteToPayload(route)
+
+		const response = await axios.post<addRoutePayload, AxiosResponse<addRouteResponse>>(`${API_URL}/routes`, payload)
+
+		return response?.data?.id
+	} 
+	catch (error) {
+		console.log('addRoute error')
+		throw error
 	}
-	return await axios.post(`${API_URL}/routes`, payload)
 }
 
 const deleteRoute = async (route: KongRouteDefinition) => {
@@ -114,12 +116,30 @@ const deleteRoute = async (route: KongRouteDefinition) => {
 	}	
 }
 
+const transformAddKongRouteToPayload = (route: addKongRouteDefinition): addRoutePayload => ({
+	name: route.name,
+	protocols: [ 'http' ],
+	methods: route.methods,
+	hosts: [ 'mylotto.dev.nzlc.co.nz' ],
+	paths: [ route.path ],
+	regex_priority: route.priority,
+	strip_path: false,
+	preserve_host: false,
+	service: {
+		id: route.serviceId
+	}
+})
+
+export const routeToString = (route: KongRouteDefinition) => JSON.stringify(transformAddKongRouteToPayload(route), null, 1)
+
 export const routesModel: KongRoutesModel = {
 	resource: getSuspendedModel<KongRouteDefinition[]>(getRoutes),
-	deleteRoute: thunk(async (actions, payload) => {
+	deleteRoute: thunk(async (actions, payload) => (
 		await actions.resource.change(deleteRoute(payload))
-	}),
-	addRoute: thunk(async (actions, payload) => {
+	)),
+	addRoute: thunk(async (actions, payload) => ( 
 		await actions.resource.change(addRoute(payload))
-	})
+	)),
+	selectedRoute: computed(state => state.resource.read()[0]),
+	selectedKey: null
 }

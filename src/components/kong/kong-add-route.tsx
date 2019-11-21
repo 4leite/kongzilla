@@ -3,6 +3,10 @@ import styled from 'styled-components'
 import { KongServiceDefinition } from 'model/kong-services'
 import { useStoreState, useStoreActions } from 'store'
 
+interface Props {
+	setSelected: (key: string) => void
+}
+
 const Name = styled.input`
 `
 const Priority = styled.input`
@@ -11,8 +15,6 @@ const Priority = styled.input`
 const Path = styled.input`
 `
 const Method = styled.input`
-`
-const Destination = styled.input`
 `
 const Actions = styled.div`
 `
@@ -23,12 +25,14 @@ const ErrorMessage = styled.div`
 	color: red;
 `
 
-const onChange = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+const onChange = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 	e.preventDefault()
 	setState(e.currentTarget.value)
 }
 
-export const KongAddRoute: React.FC = () => {
+export const KongAddRoute: React.FC<Props> = (props) => {
+	const {setSelected} = props
+
 	const readServices = useStoreState(state=> state.services.resource.read)
 	const services: KongServiceDefinition[] = readServices()
 	
@@ -54,7 +58,11 @@ export const KongAddRoute: React.FC = () => {
 			priority,
 			path,
 			methods: methods.toUpperCase().replace(/\s/g, "").split(',')
-		}).catch((error: Error) => {
+		})
+		.then((response: string) => {
+			setSelected(`${response}_0`)
+		})
+		.catch((error: Error) => {
 			setError(error)
 		})
 	}
@@ -63,7 +71,12 @@ export const KongAddRoute: React.FC = () => {
 		<Name name='name' onChange={onChange(setName)} value={name}/>
 		<Priority name='priority' onChange={onChange(setPriority)} value={priority}/>
 		<Path name='path' onChange={onChange(setPath)} value={path}/>
-		<Destination name='destination' disabled={true} onChange={onChange(setDestination)} value={destination}/>
+		{/*<Destination name='destination' disabled={true} onChange={onChange(setDestination)} value={destination}/>*/}
+		<select name='destination' onChange={onChange(setDestination)} value={destination}>
+			{services.map(service => (
+				<option value={service.id}>{service.title}</option>
+			))}
+		</select>
 		<Method name='methods' onChange={onChange(setMethods)} value={methods}/>
 		<Actions>
 			<button name='add' onClick={onClick} disabled={isDisabled}>Add</button>

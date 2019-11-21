@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import { Loading } from 'components/loading'
 import { ErrorBoundary } from 'components/error'
 import styled from 'styled-components'
@@ -31,19 +31,30 @@ const StyledLoading = styled(Loading)`
 	grid-column-end: span end;
 	justify-self: center;
 `
+const H = styled.div`
+	font-size: larger;
+	color: ${theme.page.soft};
+`
 
-export const Kong: React.FC = () => 
-<>
+export const Kong: React.FC = () => {
+	const [selected, setSelected] = useState()
+
+	return <>
 	<Container>
+		<H>Name</H><H>Priority</H><H>Path (Regex)</H><H>Destination</H><H>Methods</H><H></H>
 		<StyledErrorBoundary>
 			<Suspense fallback={<StyledLoading />}>
-				<KongAddRoute />
+				<KongAddRoute setSelected={setSelected}/>
 				<StyledErrorBoundary>
 					<Suspense fallback={<StyledLoading />}>
-						<KongRouteList />
+						<KongRouteList 
+							selected={selected}
+							setSelected={setSelected}
+						/>
 					</Suspense>
 				</StyledErrorBoundary>
 			</Suspense>
 		</StyledErrorBoundary>
 	</Container>
 </>
+}

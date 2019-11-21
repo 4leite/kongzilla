@@ -1,48 +1,46 @@
 import React from 'react'
-import { KongRouteDefinition } from 'model/kong-routes'
-import styled from 'styled-components'
+import { KongRouteDefinition, routeToString } from 'model/kong-routes'
 import { useStoreState, useStoreActions } from 'store'
 import { theme } from 'constants/style'
+import copy from 'clipboard-copy'
 
 interface Props {
 	route: KongRouteDefinition
+	selected: string
+	setSelected: (key: string) => void
 }
 
-const RouteName = styled.div`
-	color: ${theme.page.soft}
-`
-const RoutePriority = styled.div`
-`
-const RoutePath = styled.div`
-`
-const RouteMethods = styled.div`
-	color: ${theme.page.soft}
-`
-const RouteDestination = styled.div`
-`
-const RouteActions = styled.div`
-`
+const soft = {color: theme.page.soft}
+const bold: React.CSSProperties = {fontWeight: "bold"}
 
 export const KongRoute: React.FC<Props> = props => {
-	const { route } = props
+	const { route, selected, setSelected } = props
 
 	const isDisabled: boolean = useStoreState(state => state.routes.resource.isFetching)
 	const deleteRouteAction = useStoreActions(actions => actions.routes.deleteRoute)
-
-	const onClick = (e: React.SyntheticEvent) => {
+	const onDeleteClick = (e: React.SyntheticEvent) => {
 		e.preventDefault()
 		// TODO: confirmation
 		deleteRouteAction(route)
 	}
 
+	const onExportClick = (e: React.SyntheticEvent) => {
+		setSelected(route.key)
+		copy(routeToString(route))
+	}
+
+	const onSelectClick = (e: React.SyntheticEvent) => setSelected(route.key)
+
+	const isSelected = selected === route.key
 	return <>
-		<RouteName>{route.name}</RouteName>
-		<RoutePriority>{route.priority}</RoutePriority>
-		<RoutePath>{route.path}</RoutePath>
-		<RouteDestination>{route.serviceName ?? route.serviceId}</RouteDestination>
-		<RouteMethods>[{route.methods.join(", ")}]</RouteMethods>
-		<RouteActions>
-			<button name='delete' onClick={onClick} disabled={isDisabled}>Delete</button>
-		</RouteActions>
+		<div style={isSelected ? {} : soft} onClick={onSelectClick}>{route.name}</div>
+		<div style={isSelected ? bold : {}} onClick={onSelectClick}>{route.priority}</div>
+		<div style={isSelected ? bold : {}} onClick={onSelectClick}>{route.path}</div>
+		<div style={isSelected ? bold : {}} onClick={onSelectClick}>{route.serviceName ?? route.serviceId}</div>
+		<div style={isSelected ? {} : soft} onClick={onSelectClick}>[{route.methods.join(", ")}]</div>
+		<div>
+			<button name='delete' onClick={onDeleteClick} disabled={isDisabled}>Delete</button>
+			<button onClick={onExportClick}>Export</button>
+		</div>
 	</>
 }

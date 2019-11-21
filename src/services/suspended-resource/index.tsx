@@ -1,6 +1,5 @@
 import { Action, Thunk, action, thunk } from 'easy-peasy'
 
-
 export interface SuspendedResourceModel<T> {
 	isFetching: boolean
 	read: () => T
