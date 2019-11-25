@@ -87,7 +87,6 @@ const getRoutes = async (): Promise<KongRouteDefinition[]> => {
 }
 
 const addRoute = async (route: addKongRouteDefinition): Promise<string> => {
-
 	try {
 		const payload: addRoutePayload = transformAddKongRouteToPayload(route)
 
@@ -155,23 +154,20 @@ export const routesModel: KongRoutesModel = {
 		actions.resource.fetching(true)
 
 		try {
-			await deleteRoute(payload)
-			const routes = getState().resource.read() 
-			const route = routes.find(r => r.id === payload.id)
-			if (route) {route.isDeleted = true}
-			actions.resource.setResource(routes)
+			await actions.resource.change(deleteRoute(payload))
+			actions.resource.setResource(await getRoutes())
 		} catch (error) {
 			throw error
 		} finally {
 			actions.resource.fetching(false)
 		}
-		// actions.setSelected(null)
+		actions.setSelected(null)
 		// TODO: check for error result
 		return payload
 	}),
 	addRoute: thunk(async (actions, payload) => {
 		const result = await actions.resource.change(addRoute(payload))
-		actions.setSelected(`${result}.id_0`)
+		actions.setSelected(`${result}_0`)
 		return result 
 	}),
 	selectedKey: null,

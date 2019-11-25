@@ -12,11 +12,10 @@ export const KongRouteSelected: React.FC<Props> = props => {
 
 	const routeKey = useStoreState(state => state.routes.selectedKey)
 
-	const route = (routeKey && routes.find(route => route.key === routeKey)) || null
-
-	const routeJSON = useMemo(() => (
-		route && exportRoute(route)
-	), [route])
+	const routeJSON = useMemo(() => {
+		const route = routeKey && routes.find(route => route.key === routeKey)
+		return route && exportRoute(route)
+	}, [routeKey, routes])
 
 	return <div className={className}>
 		<pre>

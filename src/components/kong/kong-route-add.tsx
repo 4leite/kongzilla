@@ -69,7 +69,7 @@ export const KongRouteAdd: React.FC = () => {
 		<Path name='path' onChange={onChange(setPath)} value={path}/>
 		<select name='destination' onChange={onChange(setDestination)} value={destination}>
 			{services.map(service => (
-				<option value={service.id}>{service.name}</option>
+				<option key={service.id} value={service.id}>{service.name}</option>
 			))}
 		</select>
 		<Method name='methods' onChange={onChange(setMethods)} value={methods}/>

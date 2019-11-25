@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react'
 import { KongRouteRow } from 'components/kong/kong-route-row'
-import { useStoreState } from 'store'
+import { useStoreState, useStoreActions } from 'store'
 import { KongRouteDefinition } from 'model/kong-routes'
 import { KongRouteSelected } from 'components/kong/kong-route-selected'
 import styled from 'styled-components'
+import { useLocalStorage } from 'services/local-storage'
 
 const StyledKongRouteSelected = styled(KongRouteSelected)`
 	grid-column-start: start;
 	grid-column-end: span end;
 `
 
-interface ServiceIdTitle {
+interface ServiceIdName {
 	[key: string]: string
 }
 
@@ -34,13 +35,19 @@ const routeSorter = (a: KongRouteDefinition, b: KongRouteDefinition) => {
 	return 1
 }
 
+
 export const KongRouteList: React.FC = () => {
+
+	const [disabledRoutes, setDisabledRoutes] = useLocalStorage<KongRouteDefinition[]>('kongzilla-deleted-routes', [])
+
 	const readServices = useStoreState(state => state.services.resource.read)
 	const readRoutes = useStoreState(state => state.routes.resource.read)
+	const deleteRouteAction = useStoreActions(actions => actions.routes.deleteRoute)
+	const addRouteAction = useStoreActions(actions => actions.routes.addRoute)
 
-	const serviceNames: ServiceIdTitle = useMemo(
+	const serviceNames: ServiceIdName = useMemo(
 		// Reduce services to array with id as key and title as value
-		() => (readServices().reduce((a: ServiceIdTitle, service) => {
+		() => (readServices().reduce((a: ServiceIdName, service) => {
 			a[service.id] = service.name
 			return a
 		}, {})
@@ -48,16 +55,31 @@ export const KongRouteList: React.FC = () => {
 
 	const routes = useMemo(
 		// Sort the routes and append the service name
-		() => readRoutes().sort(routeSorter).map((route) => ({
+		() => readRoutes()
+			.concat(disabledRoutes || [])
+			.sort(routeSorter)
+			.map((route) => ({
 			...route,
 			serviceName: serviceNames[route.serviceId]
 		})
-	), [readRoutes, serviceNames])
-	
+	), [disabledRoutes, readRoutes, serviceNames])
+
+	const disableRoute = async (route: KongRouteDefinition) => {
+		await deleteRouteAction(route)
+		route.isDeleted = true
+		setDisabledRoutes([...disabledRoutes, route])
+	}
+	const enableRoute = async (route: KongRouteDefinition) => {
+		addRouteAction(route)
+		setDisabledRoutes(disabledRoutes.filter((r: KongRouteDefinition) => r.key !== route.key))
+	}
+
 	return <>
 		{routes.map(route => <KongRouteRow
 			key={`route-${route.key}`} 
 			route={route}
+			disableRoute={disableRoute}
+			enableRoute={enableRoute}
 		/>)}
 		<StyledKongRouteSelected routes={routes}/>
 	</>
