@@ -11,8 +11,7 @@ interface KongServiceResponse {
 }
 
 export interface KongServiceDefinition {
-	title: string
-	key: string
+	name: string
 	id: string
 }
 
@@ -26,8 +25,7 @@ export const getServices = async () => {
 			?.map(
 				service => ({
 					id: service.id,
-					key: service.name,
-					title: service.name
+					name: service.name
 				})
 			)
 		return services ?? []

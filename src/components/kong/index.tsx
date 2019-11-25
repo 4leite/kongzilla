@@ -47,11 +47,12 @@ export const Kong: React.FC = () => <>
 				<KongRouteAdd />
 				<StyledErrorBoundary>
 					<Suspense fallback={<StyledLoading />}>
-						<KongRouteList/>
+						<KongRouteList />
 					</Suspense>
 				</StyledErrorBoundary>
 			</Suspense>
 		</StyledErrorBoundary>
 	</Container>
 </>
+
 

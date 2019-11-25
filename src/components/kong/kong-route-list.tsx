@@ -35,14 +35,13 @@ const routeSorter = (a: KongRouteDefinition, b: KongRouteDefinition) => {
 }
 
 export const KongRouteList: React.FC = () => {
-
 	const readServices = useStoreState(state => state.services.resource.read)
 	const readRoutes = useStoreState(state => state.routes.resource.read)
 
 	const serviceNames: ServiceIdTitle = useMemo(
 		// Reduce services to array with id as key and title as value
 		() => (readServices().reduce((a: ServiceIdTitle, service) => {
-			a[service.id] = service.title
+			a[service.id] = service.name
 			return a
 		}, {})
 	), [readServices])
@@ -60,6 +59,6 @@ export const KongRouteList: React.FC = () => {
 			key={`route-${route.key}`} 
 			route={route}
 		/>)}
-		<StyledKongRouteSelected/>
+		<StyledKongRouteSelected routes={routes}/>
 	</>
 }

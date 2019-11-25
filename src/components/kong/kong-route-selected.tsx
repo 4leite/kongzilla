@@ -1,18 +1,21 @@
 import React, { useMemo } from 'react'
 import { useStoreState } from 'store'
-import { routeToString } from 'model/kong-routes'
+import { exportRoute, KongRouteDefinition } from 'model/kong-routes'
 
 interface Props {
 	className?: string
+	routes: KongRouteDefinition[]
 }
 
 export const KongRouteSelected: React.FC<Props> = props => {
-	const { className } = props
+	const { routes, className } = props
 
-	const route = useStoreState(state => state.routes.selectedRoute)
+	const routeKey = useStoreState(state => state.routes.selectedKey)
+
+	const route = (routeKey && routes.find(route => route.key === routeKey)) || null
 
 	const routeJSON = useMemo(() => (
-		route && routeToString(route)
+		route && exportRoute(route)
 	), [route])
 
 	return <div className={className}>

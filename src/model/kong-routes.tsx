@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import { API_URL } from 'constants/global'
 import { getSuspendedModel, SuspendedResourceModel } from 'services/suspended-resource'
-import { Thunk, thunk, Computed, computed, Action, action } from 'easy-peasy'
+import { Thunk, thunk, Action, action } from 'easy-peasy'
 
 interface getRoutesPayload {
 	data: Array<{
@@ -33,6 +33,7 @@ interface addRoutePayload {
 		id: string
 	}
 }
+
 interface addRouteResponse {
 	id: string
 }
@@ -122,13 +123,27 @@ const transformAddKongRouteToPayload = (route: addKongRouteDefinition): addRoute
 	}
 })
 
-export const routeToString = (route: KongRouteDefinition) => JSON.stringify(transformAddKongRouteToPayload(route), null, 1)
+export const exportRoute = (route: KongRouteDefinition): string => {
+	const json = {
+		name: route.name,
+		protocols: [ 'http' ],
+		methods: route.methods,
+		hosts: [ 'mylotto.dev.nzlc.co.nz' ],
+		paths: [ route.path ],
+		regex_priority: route.priority,
+		strip_path: false,
+		preserve_host: false,
+		service: {
+			name: route.serviceName ?? ''
+		}
+	}
+	return JSON.stringify(json, null, 1)
+}
 
 export interface KongRoutesModel {
 	resource: SuspendedResourceModel<KongRouteDefinition[]>
 	deleteRoute: Thunk<KongRoutesModel, KongRouteDefinition>
 	addRoute: Thunk<KongRoutesModel, addKongRouteDefinition, Promise<any>>
-	selectedRoute: Computed<KongRoutesModel, KongRouteDefinition | null>
 	selectedKey: string | null
 	setSelected: Action<KongRoutesModel, string | null>
 }
@@ -145,11 +160,8 @@ export const routesModel: KongRoutesModel = {
 		actions.setSelected(`${result}.id_0`)
 		return result 
 	}),
-	selectedRoute: computed(state => ( 
-		(state.selectedKey && state.resource.read().find(route => route.key === state.selectedKey)) || null
-	)),
 	selectedKey: null,
 	setSelected: action((state, routeKey) => {
-		state.selectedKey = routeKey 
+		state.selectedKey = routeKey ?? null
 	})
 }

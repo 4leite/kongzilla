@@ -27,12 +27,12 @@ const onChange = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLI
 }
 
 export const KongRouteAdd: React.FC = () => {
-	const setSelected = useStoreActions(state => state.routes.setSelected)
+	const setSelected = useStoreActions(action => action.routes.setSelected)
 
 	const readServices = useStoreState(state=> state.services.resource.read)
 	const services: KongServiceDefinition[] = readServices()
 	
-	const service: KongServiceDefinition = services.find((s) => s.title === 'dev1-api-gateway') ?? services[0]
+	const service: KongServiceDefinition = services.find((s) => s.name === 'dev1-api-gateway') ?? services[0]
 
 	const [error, setError] = useState()
 	const [name, setName] = useState('')
@@ -69,7 +69,7 @@ export const KongRouteAdd: React.FC = () => {
 		<Path name='path' onChange={onChange(setPath)} value={path}/>
 		<select name='destination' onChange={onChange(setDestination)} value={destination}>
 			{services.map(service => (
-				<option value={service.id}>{service.title}</option>
+				<option value={service.id}>{service.name}</option>
 			))}
 		</select>
 		<Method name='methods' onChange={onChange(setMethods)} value={methods}/>
