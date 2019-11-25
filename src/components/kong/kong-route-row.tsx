@@ -8,37 +8,61 @@ interface Props {
 	route: KongRouteDefinition
 }
 
-const soft = {color: theme.page.soft}
+const soft: React.CSSProperties = {color: theme.page.soft}
 const bold: React.CSSProperties = {fontWeight: "bold"}
+const deleted: React.CSSProperties = {color: theme.page.soft}
+
 
 export const KongRouteRow: React.FC<Props> = props => {
 	const { route } = props
 
 	const selected = useStoreState(state => state.routes.selectedKey)
+	const isDisabled: boolean = useStoreState(state => state.routes.resource.isFetching)
+
 	const setSelected = useStoreActions(action => action.routes.setSelected)
 
-	const isDisabled: boolean = useStoreState(state => state.routes.resource.isFetching)
 	const deleteRouteAction = useStoreActions(actions => actions.routes.deleteRoute)
-	const onDeleteClick = (e: React.SyntheticEvent) => {
+	const addRouteAction = useStoreActions(actions => actions.routes.addRoute)
+
+	const onDeleteClick = async (e: React.SyntheticEvent) => {
 		e.preventDefault()
 		// TODO: confirmation
+		setSelected(null)
 		deleteRouteAction(route)
 	}
 
+	const onActivateClick = async (e: React.SyntheticEvent) => {
+		e.preventDefault()
+		// TODO: confirmation
+		addRouteAction(route)
+		.then((response: string) => {
+			setSelected(`${response}_0`)
+		})
+	}
+
 	const onExportClick = (e: React.SyntheticEvent) => {
-		setSelected(route.key)
+		e.preventDefault()
 		copy(exportRoute(route))
+		setSelected(route.key)
 	}
 
 	const isSelected = selected === route.key
+	const { isDeleted } = route
+
 	return <>
-		<div style={isSelected ? {} : soft}>{route.name}</div>
-		<div style={isSelected ? bold : {}}>{route.priority}</div>
-		<div style={isSelected ? bold : {}}>{route.path}</div>
-		<div style={isSelected ? bold : {}}>{route.serviceName ?? route.serviceId}</div>
-		<div style={isSelected ? {} : soft}>[{route.methods.join(", ")}]</div>
+		<div style={isDeleted ? deleted : isSelected ? {} : soft}>
+			{route.name}
+		</div>
+		<div style={isDeleted ? deleted : isSelected ? bold : {}}>{route.priority}</div>
+		<div style={isDeleted ? deleted : isSelected ? bold : {}}>{route.path}</div>
+		<div style={isDeleted ? deleted : isSelected ? bold : {}}>{route.serviceName ?? route.serviceId}</div>
+		<div style={isDeleted ? deleted : isSelected ? {} : soft}>[{route.methods.join(", ")}]</div>
 		<div>
-			<button name='delete' onClick={onDeleteClick} disabled={isDisabled}>Delete</button>
+			{isDeleted ? 
+				<button name='enable' onClick={onActivateClick} disabled={isDisabled}>Enable</button>
+				:
+				<button name='delete' onClick={onDeleteClick} disabled={isDisabled}>Disable</button>
+			}
 			<button onClick={onExportClick}>Export</button>
 		</div>
 	</>

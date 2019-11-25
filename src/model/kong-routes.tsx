@@ -55,6 +55,7 @@ export interface KongRouteDefinition {
 	created: Date
 	serviceId: string
 	serviceName?: string
+	isDeleted?: boolean
 }
 
 const getRoutes = async (): Promise<KongRouteDefinition[]> => {
@@ -150,10 +151,23 @@ export interface KongRoutesModel {
 
 export const routesModel: KongRoutesModel = {
 	resource: getSuspendedModel<KongRouteDefinition[]>(getRoutes),
-	deleteRoute: thunk(async (actions, payload) => {
-		const result = await actions.resource.change(deleteRoute(payload))
-		actions.setSelected(null)
-		return result
+	deleteRoute: thunk(async (actions, payload, {getState}) => {
+		actions.resource.fetching(true)
+
+		try {
+			await deleteRoute(payload)
+			const routes = getState().resource.read() 
+			const route = routes.find(r => r.id === payload.id)
+			if (route) {route.isDeleted = true}
+			actions.resource.setResource(routes)
+		} catch (error) {
+			throw error
+		} finally {
+			actions.resource.fetching(false)
+		}
+		// actions.setSelected(null)
+		// TODO: check for error result
+		return payload
 	}),
 	addRoute: thunk(async (actions, payload) => {
 		const result = await actions.resource.change(addRoute(payload))
