@@ -26,6 +26,12 @@ const onChange = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLI
 	setState(e.currentTarget.value)
 }
 
+const onChangeParseInt = (setState: (value: any) => void) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+	e.preventDefault()
+	setState(parseInt(e.currentTarget.value))
+}
+
+
 export const KongRouteAdd: React.FC = () => {
 	const setSelected = useStoreActions(action => action.routes.setSelected)
 
@@ -65,7 +71,7 @@ export const KongRouteAdd: React.FC = () => {
 
 	return <>
 		<Name name='name' onChange={onChange(setName)} value={name}/>
-		<Priority name='priority' onChange={onChange(setPriority)} value={priority}/>
+		<Priority name='priority' onChange={onChangeParseInt(setPriority)} value={priority}/>
 		<Path name='path' onChange={onChange(setPath)} value={path}/>
 		<select name='destination' onChange={onChange(setDestination)} value={destination}>
 			{services.map(service => (
