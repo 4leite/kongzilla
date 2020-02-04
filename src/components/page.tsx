@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Kong } from 'components/kong'
 import { Header } from './header'
 import { Footer } from './footer'
+import { Lotto } from './lotto'
 // import { ControlPanel } from './control-panel'
 
 const PageContainer = styled.div`
@@ -16,7 +16,7 @@ export const Page: React.FC = () => <>
    <PageContainer>
         <Header />
 		{/*<ControlPanel />*/}
-        <Kong />
+        <Lotto />
         <Footer />
     </PageContainer>
 </>

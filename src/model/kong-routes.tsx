@@ -2,13 +2,14 @@ import axios, { AxiosResponse } from 'axios'
 import { API_URL } from 'constants/global'
 import { getSuspendedModel, SuspendedResourceModel } from 'services/suspended-resource'
 import { Thunk, thunk, Action, action } from 'easy-peasy'
+import { Method } from './method'
 
 interface getRoutesPayload {
 	data: Array<{
 		id: string
 		name: string
 		protocols: string[]
-		methods: string[]
+		methods: Method[]
 		hosts: string[]
 		paths: string[]
 		regex_priority: number
@@ -23,7 +24,7 @@ interface getRoutesPayload {
 interface addRoutePayload {
 	name: string,
 	protocols: string[],
-	methods: string[],
+	methods: Method[],
 	hosts: string[],
 	paths: string[],
 	regex_priority: number,
@@ -40,7 +41,7 @@ interface addRouteResponse {
 interface addKongRouteDefinition {
 	name: string
 	path: string
-	methods: string[]
+	methods: Method[]
 	priority: number
 	serviceId: string
 }
@@ -151,19 +152,10 @@ export interface KongRoutesModel {
 export const routesModel: KongRoutesModel = {
 	resource: getSuspendedModel<KongRouteDefinition[]>(getRoutes),
 	deleteRoute: thunk(async (actions, payload, {getState}) => {
-		actions.resource.fetching(true)
-
-		try {
-			await actions.resource.change(deleteRoute(payload))
-			actions.resource.setResource(await getRoutes())
-		} catch (error) {
-			throw error
-		} finally {
-			actions.resource.fetching(false)
-		}
+		const result = await actions.resource.change(deleteRoute(payload))
 		actions.setSelected(null)
 		// TODO: check for error result
-		return payload
+		return result
 	}),
 	addRoute: thunk(async (actions, payload) => {
 		const result = await actions.resource.change(addRoute(payload))
