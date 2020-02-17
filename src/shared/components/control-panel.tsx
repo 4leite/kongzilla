@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { createStore } from 'easy-peasy'
 import { environments } from 'shared/model/enivironments'
-import { ZillaStore } from 'shared/model/store'
+import { ZillaStore } from 'shared/model'
 
 interface Props {
 	setStore: (store: ZillaStore) => void
@@ -17,7 +17,7 @@ export const ControlPanel: React.FC<Props> = (props) => {
 	
 		if (environments[value]) {
 		  setEnvironment(value)
-		  setStore(createStore((environments[value].model)))
+		  setStore(createStore((environments[value].generateModel())))
 		}
 	}
 

@@ -1,24 +1,28 @@
-import { getStoreModel } from 'lotto/model'
+import { getLottoModel } from 'lotto/model'
+import { getKongModel  } from 'kong/model'
 import { API_DEFAULT_URL } from 'shared/constants/global'
-import { ZillaStoreModel } from './store'
+import { ZillaStoreModel, initialStoreModel } from '.'
+import { getApiService } from 'shared/services/api'
 
 interface Environments {
 	[key: string]: {
 		name: string,
-		model: ZillaStoreModel
+		generateModel: () => ZillaStoreModel
 	}
 }
 
 export const environments: Environments = {
 	initial: {
 		name: 'Select an environment',
-		model: {
-			Interface: () => null
-		}
+		generateModel: () => initialStoreModel
 	},
-	local: {
-		name: 'Local',
-		model: getStoreModel(API_DEFAULT_URL)
+	localLotto: {
+		name: 'Local Lotto',
+		generateModel: () => getLottoModel(getApiService(API_DEFAULT_URL))
+	},
+	localKong: {
+		name: 'Local Kong',
+		generateModel: () => getKongModel(getApiService(API_DEFAULT_URL))
 	},
 	/*dev0: {
 		name: 'Dev0',

@@ -5,9 +5,8 @@ import { StoreProvider, createStore } from 'easy-peasy'
 import { Page } from 'shared/components/page'
 import { ControlPanel } from './components/control-panel'
 import { environments } from './model/enivironments'
-import { ZillaStore } from './model/store'
 
-const initialStore: ZillaStore = createStore(environments.initial.model)
+const initialStore = createStore(environments.initial.generateModel())
 
 export const App: React.FC = () => {
   console.log('app')
