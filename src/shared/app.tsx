@@ -6,7 +6,7 @@ import { Page } from 'shared/components/page'
 import { ControlPanel } from './components/control-panel'
 import { environments } from './model/enivironments'
 
-const initialStore = createStore(environments.initial.generateModel())
+const initialStore = createStore(environments[0].generateModel())
 
 export const App: React.FC = () => {
   console.log('app')

@@ -10,23 +10,23 @@ interface Props {
 export const ControlPanel: React.FC<Props> = (props) => {
 	const { setStore } = props
 
-	const [ environment, setEnvironment ] = useState('initial')
+	const [ index, setIndex ] = useState(0)
 
 	const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = e.target
+		const i: number = parseInt(e.target.value)
 	
-		if (environments[value]) {
-		  setEnvironment(value)
-		  setStore(createStore((environments[value].generateModel())))
+		if (environments[i]) {
+		  setIndex(i)
+		  setStore(createStore((environments[i].generateModel())))
 		}
 	}
 
-	const options = Object.keys(environments).map(e => (
-		<option key={e} value={e}>{environments[e].name}</option>
+	const options = environments.map((e, i) => (
+		<option key={i} value={i}>{e.name}</option>
 	))
 
 	return <>
-		<select value={environment} onChange={onChange}>
+		<select value={index} onChange={onChange}>
         	{options}
       	</select>
 	</>

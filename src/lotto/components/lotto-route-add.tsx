@@ -52,7 +52,7 @@ export const LottoRouteAdd: React.FC = () => {
 	const [error, setError] = useState()
 	const [priority, setPriority] = useState(10)
 	const [path, setPath] = useState('/api/')
-	const [methods, setMethods] = useState('GET, PUT, POST, DELETE, OPTIONS')
+	const [methods, setMethods] = useState('GET, PUT, POST, DELETE')
 	const [destination, setDestination] = useState(null);
 
 	const isDisabled: boolean = useStoreState(state => state.routes.resource.isFetching)
