@@ -38,7 +38,7 @@ const routeSorter = (a: KongRouteDefinition, b: KongRouteDefinition) => {
 
 export const KongRouteList: React.FC = () => {
 
-	const [disabledRoutes, setDisabledRoutes] = useLocalStorage<KongRouteDefinition[]>('zilla-kong-deleted-routes', [])
+	const [disabledRoutes, setDisabledRoutes] = useLocalStorage<KongRouteDefinition[]>('kong:disabled-routes', [])
 
 	const readServices = useStoreState(state => state.services.resource.read)
 	const readRoutes = useStoreState(state => state.routes.resource.read)
