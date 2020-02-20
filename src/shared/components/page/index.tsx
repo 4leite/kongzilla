@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react'
 import styled from 'styled-components'
-import { Header } from 'shared/components/header'
-import { Footer } from 'shared/components/footer'
+import { Header } from 'shared/components/page/header'
+import { Footer } from 'shared/components/page/footer'
 import { useStoreState } from 'lotto/model'
 import { theme } from 'shared/constants/style'
-import { ErrorBoundary } from './error'
-import { Loading } from './loading'
+import { ErrorBoundary } from '../error'
+import { Loading } from '../loading'
 
 const PageContainer = styled.div`
 	display: grid;

@@ -30,6 +30,6 @@ const endPoints: Environment[] = API_ENDPOINTS.map(e => {
 })
 
 export const environments: Environment[] = endPoints[0] ? endPoints : [{
-	name: 'Select an environment',
+	name: 'No environments found',
 	generateModel: () => initialStoreModel
 }]
