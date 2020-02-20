@@ -40,7 +40,7 @@ export interface LottoRouteDefinition {
 		host: string
     },
 	id: string
-	isDeleted?: boolean
+	isDisabled?: boolean
 }
 
 export interface LottoRoutesModel {

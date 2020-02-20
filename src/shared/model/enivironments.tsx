@@ -9,7 +9,7 @@ interface Environment {
 	generateModel: () => ZillaStoreModel
 }
 
-const endPoints = API_ENDPOINTS.map(e => {
+const endPoints: Environment[] = API_ENDPOINTS.map(e => {
 	const { name, type, url } = e
 
 	switch(type) {
@@ -29,7 +29,7 @@ const endPoints = API_ENDPOINTS.map(e => {
 	}	
 })
 
-export const environments: Environment[] = [{
+export const environments: Environment[] = endPoints[0] ? endPoints : [{
 	name: 'Select an environment',
 	generateModel: () => initialStoreModel
-}].concat(endPoints)
+}]

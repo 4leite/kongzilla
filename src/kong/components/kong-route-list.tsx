@@ -38,7 +38,7 @@ const routeSorter = (a: KongRouteDefinition, b: KongRouteDefinition) => {
 
 export const KongRouteList: React.FC = () => {
 
-	const [disabledRoutes, setDisabledRoutes] = useLocalStorage<KongRouteDefinition[]>('kongzilla-deleted-routes', [])
+	const [disabledRoutes, setDisabledRoutes] = useLocalStorage<KongRouteDefinition[]>('zilla-kong-deleted-routes', [])
 
 	const readServices = useStoreState(state => state.services.resource.read)
 	const readRoutes = useStoreState(state => state.routes.resource.read)
@@ -73,6 +73,9 @@ export const KongRouteList: React.FC = () => {
 		addRouteAction(route)
 		setDisabledRoutes(disabledRoutes.filter((r: KongRouteDefinition) => r.key !== route.key))
 	}
+	const deleteRoute = async (route: KongRouteDefinition) => {
+		setDisabledRoutes(disabledRoutes.filter((r: KongRouteDefinition) => r.key !== route.key))
+	}
 
 	return <>
 		{routes.map(route => <KongRouteRow
@@ -80,6 +83,7 @@ export const KongRouteList: React.FC = () => {
 			route={route}
 			disableRoute={disableRoute}
 			enableRoute={enableRoute}
+			deleteRoute={deleteRoute}
 		/>)}
 		<StyledKongRouteSelected routes={routes}/>
 	</>

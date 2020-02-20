@@ -33,7 +33,6 @@ export const getHostsModel = (apiService: ApiService): LottoHostsModel => ({
 			// TODO: bug in typescript
 			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			const hosts: LottoHostDefinition[] = response?.data?.hosts
-				?.filter((host) => host.name && false)
 				?.sort((a, b) => a.name.localeCompare(b.name))
 				?.map(
 					host => ({
