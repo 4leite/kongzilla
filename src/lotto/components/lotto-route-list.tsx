@@ -33,7 +33,7 @@ const StyledErrorMessage = styled(ErrorMessage)`
 
 export const LottoRouteList: React.FC = () => {
 
-	const [disabledRoutes, setDisabledRoutes] = useLocalStorage<LottoRouteDefinition[]>('zilla-lotto-deleted-routes', [])
+	const [disabledRoutes, setDisabledRoutes] = useLocalStorage<LottoRouteDefinition[]>('lotto:disabled-routes', [])
 	const [ error, setError ] = useState()
 
 	const readRoutes = useStoreState(state => state.routes.resource.read)
