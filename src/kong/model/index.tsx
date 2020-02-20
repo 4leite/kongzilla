@@ -21,6 +21,7 @@ export const useStoreState = typedHooks.useStoreState
 
 export const getKongModel = (api: ApiService): StoreModel => ({
 	Interface: Kong,
+	columns: ['Name','Priority','Path (Regex)','Destination','Methods',''],
 	routes: getRoutesModel(api),
 	services: getServicesModel(api),
 	isFetchingAll: computed(

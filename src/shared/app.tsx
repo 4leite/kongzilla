@@ -12,6 +12,8 @@ clearDeprecatedKeys([
   'kongzilla-deleted-routes',
   'lottozilla-deleted-routes'
 ])
+
+// initialise the store: enables prefetching the data
 const initialStore = createStore(environments[0].generateModel())
 
 export const App: React.FC = () => {

@@ -1,11 +1,18 @@
-import { Store } from 'easy-peasy';
+import { Store, createTypedHooks } from 'easy-peasy';
+
+export type ZillaInterface = React.FC
 
 export interface ZillaStoreModel {
-	Interface: React.FC
+	Interface: ZillaInterface
+	columns: string[]
 }
 
 export type ZillaStore = Store<ZillaStoreModel>
 
+const typedHooks = createTypedHooks<ZillaStoreModel>()
+export const useStoreState = typedHooks.useStoreState
+
 export const initialStoreModel: ZillaStoreModel = {
-	Interface: () => null
+	Interface: () => null,
+	columns: ['']
 }

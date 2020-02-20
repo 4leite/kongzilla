@@ -22,6 +22,7 @@ export const useStoreState = typedHooks.useStoreState
 
 export const getLottoModel = (api: ApiService): StoreModel => ({
 	Interface: Lotto,
+	columns: ['Priority','Path (Regex)','Destination','Methods', ''],
 	routes: getRoutesModel(api),
 	hosts: getHostsModel(api),
 	isFetchingAll: computed(
