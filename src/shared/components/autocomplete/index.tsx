@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react";
 import styled from 'styled-components';
 
-// class="suggestions"
 const Suggestions = styled.ul`
 	list-style: none;
 	margin-top: 0;
@@ -24,7 +23,6 @@ const Suggestion = styled.li`
 	background-color: #eee;
 	:hover {${highlighted}}
 `
-
 interface Props {
 	value: string
 	setValue: (value: string) => void
@@ -95,8 +93,8 @@ export const Autocomplete: React.FC<Props> = (props) => {
 	// Set position of suggestions
 	const inputCallback = useCallback((node: HTMLInputElement) => {
 		setPosition({
-			left: node.offsetLeft,
-			top: node.offsetTop + node.offsetHeight
+			left: node?.offsetLeft,
+			top: node?.offsetTop + node?.offsetHeight
 		})
 	}, [setPosition])
 

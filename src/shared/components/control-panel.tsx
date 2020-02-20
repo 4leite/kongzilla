@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { createStore } from 'easy-peasy'
 import { environments } from 'shared/model/enivironments'
 import { ZillaStore } from 'shared/model'
+import { onChange } from 'shared/helpers/event-handlers'
 
 interface Props {
 	setStore: (store: ZillaStore) => void
@@ -12,8 +13,8 @@ export const ControlPanel: React.FC<Props> = (props) => {
 
 	const [ index, setIndex ] = useState(0)
 
-	const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const i: number = parseInt(e.target.value)
+	const changeEnvironment = (env: string) => {
+		const i: number = parseInt(env)
 	
 		if (environments[i]) {
 		  setIndex(i)
@@ -26,7 +27,7 @@ export const ControlPanel: React.FC<Props> = (props) => {
 	))
 
 	return <>
-		<select value={index} onChange={onChange}>
+		<select value={index} onChange={onChange(changeEnvironment)}>
         	{options}
       	</select>
 	</>

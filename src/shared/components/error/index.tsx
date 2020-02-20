@@ -1,4 +1,5 @@
 import React from 'react'
+import { ErrorMessage } from './error-message'
 
 interface Props {
 	children?: any
@@ -16,7 +17,7 @@ interface State {
 // ErrorBoundary must be a class component per 
 export class ErrorBoundary extends React.Component<Props, State> {
 	static defaultProps: Props = {
-		fallback: props => <>{props.error?.message ?? 'Error'}</>
+		fallback: ErrorMessage
 	}
 
 	state: State = {}
